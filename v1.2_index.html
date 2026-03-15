@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ražošanas uzskaite</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── CSS MAINĪGIE ─────────────────────────── */
+    :root {
+      --fons:        #0d0f12;
+      --panelis:     #151920;
+      --robeža:      #252d38;
+      --robeža2:     #1e2730;
+      --teksts:      #e8edf2;
+      --teksts2:     #7a8fa6;
+      --akcents:     #00c9a7;
+      --akcents2:    #0091ff;
+      --brīdinājums: #ff6b35;
+      --klauda:      #ff4757;
+      --veiksme:     #2ed573;
+      --ēna:         0 4px 24px rgba(0,0,0,0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--fons);
+      color: var(--teksts);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── FONA REŽĢIS ───────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,201,167,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,201,167,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── GALVENE ─────────────────────────────────── */
+    header {
+      position: relative;
+      z-index: 10;
+      border-bottom: 1px solid var(--robeža);
+      background: rgba(13,15,18,0.95);
+      backdrop-filter: blur(12px);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-ikona {
+      width: 32px; height: 32px;
+      background: var(--akcents);
+      clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: #000;
+    }
+
+    .logo-teksts {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--teksts);
+    }
+
+    .logo-teksts span { color: var(--akcents); }
+
+    .versija {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; color: var(--teksts2);
+      border: 1px solid var(--robeža);
+      padding: 4px 10px; border-radius: 4px;
+    }
+
+    /* ── NAVIGĀCIJA ────────────────────────────── */
+    nav {
+      position: relative; z-index: 10;
+      border-bottom: 1px solid var(--robeža);
+      background: var(--panelis);
+      padding: 0 32px;
+      display: flex; gap: 0;
+    }
+
+    .nav-poga {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--teksts2);
+      padding: 14px 24px;
+      border: none; border-bottom: 2px solid transparent;
+      background: none; cursor: pointer;
+      transition: all .2s;
+    }
+
+    .nav-poga:hover { color: var(--teksts); }
+
+    .nav-poga.aktiva {
+      color: var(--akcents);
+      border-bottom-color: var(--akcents);
+    }
+
+    /* ── GALVENAIS SATURS ──────────────────────── */
+    main {
+      position: relative; z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 32px;
+    }
+
+    .skats { display: none; }
+    .skats.aktīvs { display: block; animation: parādīties .3s ease; }
+
+    @keyframes parādīties {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SADAĻAS VIRSRAKSTS ────────────────────── */
+    .sadala-virsraksts {
+      display: flex; align-items: baseline; gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .sadala-virsraksts h2 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 20px; font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .sadala-virsraksts h2 span { color: var(--akcents); }
+
+    .sadala-līnija {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--robeža), transparent);
+    }
+
+    /* ── DIVkolonnu IZKĀRTOJUMS ────────────────── */
+    .divas-kolonnas {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ── PANEĻI ────────────────────────────────── */
+    .panelis {
+      background: var(--panelis);
+      border: 1px solid var(--robeža);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .panelis-galvene {
+      background: var(--robeža2);
+      border-bottom: 1px solid var(--robeža);
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .panelis-galvene-teksts {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--teksts2);
+    }
+
+    .panelis-saturs { padding: 20px; }
+
+    /* ── FORMAS ELEMENTI ───────────────────────── */
+    .lauka-grupa { margin-bottom: 16px; }
+
+    .lauka-etikete {
+      display: block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--teksts2);
+      margin-bottom: 6px;
+    }
+
+    .lauks {
+      width: 100%;
+      background: var(--fons);
+      border: 1px solid var(--robeža);
+      border-radius: 4px;
+      color: var(--teksts);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      padding: 10px 14px;
+      transition: border-color .2s;
+      outline: none;
+    }
+
+    .lauks:focus { border-color: var(--akcents); }
+
+    .lauks option { background: var(--panelis); }
+
+    /* ── POGAS ─────────────────────────────────── */
+    .poga {
+      width: 100%;
+      padding: 12px 20px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      border: none; border-radius: 4px;
+      cursor: pointer; transition: all .2s;
+    }
+
+    .poga-akcents {
+      background: var(--akcents);
+      color: #000;
+    }
+
+    .poga-akcents:hover {
+      background: #00e5be;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0,201,167,0.3);
+    }
+
+    .poga-sekundara {
+      background: transparent;
+      color: var(--akcents2);
+      border: 1px solid var(--akcents2);
+    }
+
+    .poga-sekundara:hover { background: rgba(0,145,255,0.08); }
+
+    .poga:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
+
+    /* ── PAZIŅOJUMI ────────────────────────────── */
+    .pazinojums {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      padding: 10px 14px;
+      border-radius: 4px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .pazinojums.veiksme {
+      background: rgba(46,213,115,0.1);
+      border: 1px solid rgba(46,213,115,0.3);
+      color: var(--veiksme);
+      display: block;
+    }
+
+    .pazinojums.klauda {
+      background: rgba(255,71,87,0.1);
+      border: 1px solid rgba(255,71,87,0.3);
+      color: var(--klauda);
+      display: block;
+    }
+
+    /* ── TABULA ────────────────────────────────── */
+    .tabulas-apmale {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--robeža);
+    }
+
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead tr { background: var(--robeža2); }
+
+    thead th {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--teksts2);
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--robeža);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--robeža2);
+      transition: background .15s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(0,201,167,0.03); }
+
+    tbody td {
+      padding: 12px 16px;
+      color: var(--teksts);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+    }
+
+    .tuksha-tabula {
+      text-align: center;
+      padding: 48px 0;
+      color: var(--teksts2);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    /* ── NOZĪMĪTES ─────────────────────────────── */
+    .nozimite {
+      display: inline-block;
+      padding: 2px 8px; border-radius: 3px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+
+    .nozimite-zala  { background: rgba(0,201,167,0.15); color: var(--akcents); }
+    .nozimite-zila  { background: rgba(0,145,255,0.15); color: var(--akcents2); }
+    .nozimite-peleka { background: rgba(122,143,166,0.15); color: var(--teksts2); }
+
+    /* ── PROGNOZES PANELIS ─────────────────────── */
+    .prognoze-rezultats {
+      background: var(--fons);
+      border: 1px solid var(--robeža);
+      border-radius: 8px;
+      padding: 24px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .prognoze-rezultats.radas { display: block; animation: parādīties .4s ease; }
+
+    .prognoze-skaitlis {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 48px; font-weight: 600;
+      color: var(--akcents);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .prognoze-vieniba {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px; color: var(--teksts2);
+      text-transform: uppercase; letter-spacing: 2px;
+    }
+
+    .prognoze-detali {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-top: 20px;
+    }
+
+    .prognoze-karte {
+      background: var(--panelis);
+      border: 1px solid var(--robeža);
+      border-radius: 6px;
+      padding: 14px 16px;
+    }
+
+    .prognoze-karte-nosaukums {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--teksts2);
+      margin-bottom: 4px;
+    }
+
+    .prognoze-karte-vertiba {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 18px; font-weight: 600;
+      color: var(--teksts);
+    }
+
+    /* ── STATISTIKAS JOSLAS ────────────────────── */
+    .stat-josla {
+      background: var(--fons);
+      border: 1px solid var(--robeža);
+      border-radius: 6px;
+      padding: 16px;
+      display: flex; align-items: center;
+      gap: 16px;
+    }
+
+    .stat-skaitlis {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 28px; font-weight: 600;
+      min-width: 60px;
+    }
+
+    .stat-nosaukums {
+      font-size: 12px; color: var(--teksts2);
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    /* ── IELĀDES ANIMĀCIJA ─────────────────────── */
+    .ielades-rinda td {
+      padding: 12px 16px;
+    }
+
+    .skelets {
+      height: 12px; border-radius: 3px;
+      background: linear-gradient(90deg, var(--robeža2) 25%, var(--robeža) 50%, var(--robeža2) 75%);
+      background-size: 200% 100%;
+      animation: skelets-kust 1.5s infinite;
+    }
+
+    @keyframes skelets-kust {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── AUGŠĀ JOSLA AR FILTRIEM ───────────────── */
+    .filtri-josla {
+      display: flex; align-items: center;
+      gap: 12px; margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filtri-josla .lauks {
+      width: auto; flex: 1; min-width: 160px;
+    }
+
+    .filtri-josla label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; color: var(--teksts2);
+      letter-spacing: 1px; white-space: nowrap;
+    }
+
+    /* ── PROGRESS JOSLA ────────────────────────── */
+    .progress-ārpuse {
+      background: var(--robeža);
+      border-radius: 2px; height: 3px;
+      width: 100%; overflow: hidden;
+    }
+
+    .progress-iekša {
+      height: 100%;
+      background: linear-gradient(90deg, var(--akcents), var(--akcents2));
+      border-radius: 2px;
+      transition: width .6s ease;
+    }
+
+    /* ── RESPONSĪVS ────────────────────────────── */
+    @media (max-width: 800px) {
+      .divas-kolonnas { grid-template-columns: 1fr; }
+      main { padding: 24px 16px; }
+      nav { padding: 0 16px; overflow-x: auto; }
+      .nav-poga { padding: 14px 16px; font-size: 11px; }
+      header { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── GALVENE ──────────────────────────────────── -->
+<header>
+  <div class="logo">
+    <div class="logo-ikona">R</div>
+    <span class="logo-teksts">Ražo<span>•</span>Uzskaite</span>
+  </div>
+  <span class="versija">v1.2</span>
+</header>
+
+<!-- ── NAVIGĀCIJA ──────────────────────────────── -->
+<nav>
+  <button class="nav-poga aktiva" onclick="rādītSkatu('ievade', this)">01 / Ievade</button>
+  <button class="nav-poga" onclick="rādītSkatu('vesture', this)">02 / Vēsture</button>
+  <button class="nav-poga" onclick="rādītSkatu('prognoze', this)">03 / Prognoze</button>
+  <button class="nav-poga" onclick="rādītSkatu('darbi', this)">04 / Darbi</button>
+</nav>
+
+<!-- ── GALVENAIS SATURS ─────────────────────────── -->
+<main>
+
+  <!-- ════════════════════════════════════════════
+       SKATS 1: IERAKSTA IEVADE
+  ════════════════════════════════════════════ -->
+  <div id="skats-ievade" class="skats aktīvs">
+    <div class="sadala-virsraksts">
+      <h2><span>//</span> Jauns ieraksts</h2>
+      <div class="sadala-līnija"></div>
+    </div>
+
+    <div class="divas-kolonnas">
+
+      <!-- Ievades forma -->
+      <div class="panelis">
+        <div class="panelis-galvene">
+          <span class="panelis-galvene-teksts">Datu ievade</span>
+        </div>
+        <div class="panelis-saturs">
+
+          <div class="lauka-grupa">
+            <label class="lauka-etikete">Darba veids</label>
+            <select id="ieraksts-darbs" class="lauks">
+              <option value="">— ielādē —</option>
+            </select>
+          </div>
+
+          <div class="lauka-grupa">
+            <label class="lauka-etikete">Nepieciešamo produktu skaits</label>
+            <input id="ieraksts-nepieciesams" type="number" min="1" class="lauks" placeholder="50">
+          </div>
+
+          <div class="lauka-grupa">
+            <label class="lauka-etikete">Gatavo produktu skaits</label>
+            <input id="ieraksts-gatavs" type="number" min="0" class="lauks" placeholder="12">
+          </div>
+
+          <div class="lauka-grupa">
+            <label class="lauka-etikete">Pavadītais laiks (stundas)</label>
+            <input id="ieraksts-laiks" type="number" min="0.01" step="0.25" class="lauks" placeholder="2.5">
+          </div>
+
+          <button class="poga poga-akcents" onclick="saglabatIerakstu()">
+            ▶ Saglabāt ierakstu
+          </button>
+
+          <div id="ieraksts-pazinojums" class="pazinojums"></div>
+        </div>
+      </div>
+
+      <!-- Pēdējie ieraksti -->
+      <div>
+        <div class="panelis">
+          <div class="panelis-galvene">
+            <span class="panelis-galvene-teksts">Pēdējie 5 ieraksti</span>
+          </div>
+          <div class="tabulas-apmale" style="border:none; border-radius:0;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Darbs</th>
+                  <th>Nepiec.</th>
+                  <th>Gatavs</th>
+                  <th>Laiks</th>
+                  <th>Ātrums</th>
+                </tr>
+              </thead>
+              <tbody id="pedejie-ieraksti">
+                <tr class="ielades-rinda">
+                  <td><div class="skelets" style="width:80px"></div></td>
+                  <td><div class="skelets" style="width:30px"></div></td>
+                  <td><div class="skelets" style="width:30px"></div></td>
+                  <td><div class="skelets" style="width:40px"></div></td>
+                  <td><div class="skelets" style="width:50px"></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       SKATS 2: VĒSTURE
+  ════════════════════════════════════════════ -->
+  <div id="skats-vesture" class="skats">
+    <div class="sadala-virsraksts">
+      <h2><span>//</span> Vēstures ieraksti</h2>
+      <div class="sadala-līnija"></div>
+    </div>
+
+    <div class="filtri-josla">
+      <label>Filtrēt pēc darba:</label>
+      <select id="vesture-filtrs" class="lauks" onchange="ielādetVēsturi()">
+        <option value="">Visi darbi</option>
+      </select>
+      <button class="poga poga-sekundara" style="width:auto;padding:10px 20px;" onclick="ielādetVēsturi()">
+        ↺ Atjaunot
+      </button>
+    </div>
+
+    <div class="tabulas-apmale">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Darbs</th>
+            <th>Nepieciešams</th>
+            <th>Gatavs</th>
+            <th>Laiks (h)</th>
+            <th>Ātrums (gab/h)</th>
+            <th>Izpilde %</th>
+            <th>Datums</th>
+          </tr>
+        </thead>
+        <tbody id="vestures-tabula">
+          <tr><td colspan="8" class="tuksha-tabula">Ielādē...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       SKATS 3: PROGNOZE
+  ════════════════════════════════════════════ -->
+  <div id="skats-prognoze" class="skats">
+    <div class="sadala-virsraksts">
+      <h2><span>//</span> Laika prognoze</h2>
+      <div class="sadala-līnija"></div>
+    </div>
+
+    <div class="divas-kolonnas">
+
+      <div class="panelis">
+        <div class="panelis-galvene">
+          <span class="panelis-galvene-teksts">Parametri</span>
+        </div>
+        <div class="panelis-saturs">
+          <div class="lauka-grupa">
+            <label class="lauka-etikete">Darba veids</label>
+            <select id="prognoze-darbs" class="lauks">
+              <option value="">— izvēlies —</option>
+            </select>
+          </div>
+          <div class="lauka-grupa">
+            <label class="lauka-etikete">Nepieciešamo produktu skaits</label>
+            <input id="prognoze-skaits" type="number" min="1" class="lauks" placeholder="100">
+          </div>
+          <button class="poga poga-akcents" onclick="apreklinatPrognozi()">
+            ◆ Aprēķināt prognozi
+          </button>
+          <div id="prognoze-pazinojums" class="pazinojums"></div>
+        </div>
+      </div>
+
+      <div>
+        <div id="prognoze-rezultats" class="prognoze-rezultats">
+          <div style="margin-bottom: 20px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--teksts2); margin-bottom:8px;">Prognozētais laiks</div>
+            <div class="prognoze-skaitlis" id="prognoze-laiks-skaitlis">—</div>
+            <div class="prognoze-vieniba">stundas</div>
+          </div>
+
+          <div class="progress-ārpuse" style="margin-bottom:20px;">
+            <div class="progress-iekša" id="prognoze-progress" style="width:0%"></div>
+          </div>
+
+          <div class="prognoze-detali">
+            <div class="prognoze-karte">
+              <div class="prognoze-karte-nosaukums">Vidējais ātrums</div>
+              <div class="prognoze-karte-vertiba" id="prog-atrums">—</div>
+              <div style="font-size:10px; color:var(--teksts2); margin-top:2px; font-family:'IBM Plex Mono',monospace;">gab / stundā</div>
+            </div>
+            <div class="prognoze-karte">
+              <div class="prognoze-karte-nosaukums">Datu sesijas</div>
+              <div class="prognoze-karte-vertiba" id="prog-sesijas">—</div>
+              <div style="font-size:10px; color:var(--teksts2); margin-top:2px; font-family:'IBM Plex Mono',monospace;">ieraksti bāzē</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="prognoze-tuksha" style="padding:48px 0; text-align:center; color:var(--teksts2); font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:1px;">
+          Ievadi parametrus un nospied aprēķināt
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       SKATS 4: DARBU PĀRVALDĪBA
+  ════════════════════════════════════════════ -->
+  <div id="skats-darbi" class="skats">
+    <div class="sadala-virsraksts">
+      <h2><span>//</span> Darbu veidi</h2>
+      <div class="sadala-līnija"></div>
+    </div>
+
+    <div class="divas-kolonnas">
+
+      <div class="panelis">
+        <div class="panelis-galvene">
+          <span class="panelis-galvene-teksts">Pievienot jaunu</span>
+        </div>
+        <div class="panelis-saturs">
+          <div class="lauka-grupa">
+            <label class="lauka-etikete">Nosaukums</label>
+            <input id="darbs-nosaukums" type="text" class="lauks" placeholder="piem. Koka kastes">
+          </div>
+          <div class="lauka-grupa">
+            <label class="lauka-etikete">Apraksts (neobligāts)</label>
+            <input id="darbs-apraksts" type="text" class="lauks" placeholder="piem. Koka kastes montāža">
+          </div>
+          <button class="poga poga-akcents" onclick="pievienotDarbu()">
+            + Pievienot darbu
+          </button>
+          <div id="darbs-pazinojums" class="pazinojums"></div>
+        </div>
+      </div>
+
+      <div class="tabulas-apmale">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nosaukums</th>
+              <th>Apraksts</th>
+            </tr>
+          </thead>
+          <tbody id="darbu-tabula">
+            <tr><td colspan="3" class="tuksha-tabula">Ielādē...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- ── JAVASCRIPT ───────────────────────────────── -->
+<script>
+
+// ─────────────────────────────────────────────
+// NAVIGĀCIJAS PĀRVALDĪBA
+// ─────────────────────────────────────────────
+
+/**
+ * Parāda izvēlēto skatu un slēpj pārējos.
+ * Atjaunina navigācijas pogas stāvokli.
+ */
+function rādītSkatu(nosaukums, pogaElements) {
+  // Slēpj visus skatus
+  document.querySelectorAll('.skats').forEach(s => s.classList.remove('aktīvs'));
+  // Noņem aktīvo stāvokli visām pogām
+  document.querySelectorAll('.nav-poga').forEach(p => p.classList.remove('aktiva'));
+
+  // Parāda izvēlēto skatu
+  document.getElementById('skats-' + nosaukums).classList.add('aktīvs');
+  pogaElements.classList.add('aktiva');
+
+  // Ielādē datus atkarībā no skata
+  if (nosaukums === 'ievade')   { ielādetDarbus('ieraksts-darbs');  ielādetPedejosIerakstus(); }
+  if (nosaukums === 'vesture')  { ielādetDarbus('vesture-filtrs', true); ielādetVēsturi(); }
+  if (nosaukums === 'prognoze') { ielādetDarbus('prognoze-darbs'); }
+  if (nosaukums === 'darbi')    { ielādetDarbuTabulu(); }
+}
+
+
+// ─────────────────────────────────────────────
+// DARBU IELĀDE
+// ─────────────────────────────────────────────
+
+/**
+ * Ielādē darbu sarakstu no API un aizpilda izvēlni.
+ * @param {string} izvelenesId - mērķa <select> elementa ID
+ * @param {boolean} arVisu - vai pievienot opciju "Visi"
+ */
+async function ielādetDarbus(izvelenesId, arVisu = false) {
+  const izvele = document.getElementById(izvelenesId);
+  try {
+    const atbilde = await fetch('/api/darbi');
+    const darbi   = await atbilde.json();
+
+    izvele.innerHTML = arVisu
+      ? '<option value="">Visi darbi</option>'
+      : '<option value="">— izvēlies —</option>';
+
+    darbi.forEach(d => {
+      const opcija = document.createElement('option');
+      opcija.value       = d.id;
+      opcija.textContent = d.nosaukums + (d.apraksts ? ` — ${d.apraksts}` : '');
+      izvele.appendChild(opcija);
+    });
+  } catch (kl) {
+    console.error('Kļūda ielādējot darbus:', kl);
+  }
+}
+
+
+// ─────────────────────────────────────────────
+// IERAKSTU IEVADE
+// ─────────────────────────────────────────────
+
+/**
+ * Nolasa formas vērtības, validē tās un sūta POST pieprasījumu uz API.
+ * Pēc sekmīgas saglabāšanas notīra formu un atjaunina tabulu.
+ */
+async function saglabatIerakstu() {
+  const darbsId      = document.getElementById('ieraksts-darbs').value;
+  const nepieciesams = parseInt(document.getElementById('ieraksts-nepieciesams').value);
+  const gatavs       = parseInt(document.getElementById('ieraksts-gatavs').value);
+  const laiks        = parseFloat(document.getElementById('ieraksts-laiks').value);
+  const pazinojums   = document.getElementById('ieraksts-pazinojums');
+
+  // Klienta puses validācija
+  if (!darbsId)          return rādītPazinojumu(pazinojums, 'klauda', 'Izvēlies darba veidu.');
+  if (!nepieciesams || nepieciesams < 1) return rādītPazinojumu(pazinojums, 'klauda', 'Nepieciešamajam skaitam jābūt ≥ 1.');
+  if (isNaN(gatavs) || gatavs < 0)      return rādītPazinojumu(pazinojums, 'klauda', 'Gatavajam skaitam jābūt ≥ 0.');
+  if (!laiks || laiks <= 0)             return rādītPazinojumu(pazinojums, 'klauda', 'Laikam jābūt > 0.');
+
+  try {
+    const atbilde = await fetch('/api/ieraksti', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        darbs_id:            parseInt(darbsId),
+        nepieciesams_skaits: nepieciesams,
+        gatavs_skaits:       gatavs,
+        laiks_stundas:       laiks
+      })
+    });
+
+    const rezultats = await atbilde.json();
+
+    if (!atbilde.ok) {
+      return rādītPazinojumu(pazinojums, 'klauda', rezultats.klauda || 'Servera kļūda.');
+    }
+
+    // Sekmīgi saglabāts — notīra formu
+    rādītPazinojumu(pazinojums, 'veiksme', `✓ Ieraksts saglabāts (${rezultats.datums})`);
+    document.getElementById('ieraksts-nepieciesams').value = '';
+    document.getElementById('ieraksts-gatavs').value       = '';
+    document.getElementById('ieraksts-laiks').value        = '';
+
+    ielādetPedejosIerakstus();
+
+  } catch (kl) {
+    rādītPazinojumu(pazinojums, 'klauda', 'Nevar sasniegt serveri.');
+  }
+}
+
+/** Ielādē pēdējos 5 ierakstus ievades skata tabulā. */
+async function ielādetPedejosIerakstus() {
+  const ķermenis = document.getElementById('pedejie-ieraksti');
+  try {
+    const atbilde  = await fetch('/api/ieraksti');
+    const ieraksti = await atbilde.json();
+    const pedejie  = ieraksti.slice(0, 5);
+
+    if (!pedejie.length) {
+      ķermenis.innerHTML = '<tr><td colspan="5" class="tuksha-tabula">Nav ierakstu</td></tr>';
+      return;
+    }
+
+    ķermenis.innerHTML = pedejie.map(i => `
+      <tr>
+        <td><span class="nozimite nozimite-zila">${i.darbs}</span></td>
+        <td>${i.nepieciesams_skaits}</td>
+        <td>${i.gatavs_skaits}</td>
+        <td>${i.laiks_stundas.toFixed(2)}h</td>
+        <td><span class="nozimite nozimite-zala">${i.atrums} /h</span></td>
+      </tr>
+    `).join('');
+  } catch (kl) {
+    ķermenis.innerHTML = '<tr><td colspan="5" class="tuksha-tabula">Kļūda ielādējot</td></tr>';
+  }
+}
+
+
+// ─────────────────────────────────────────────
+// VĒSTURES SKATS
+// ─────────────────────────────────────────────
+
+/** Ielādē vēstures ierakstus, pēc vajadzības filtrējot pēc darba. */
+async function ielādetVēsturi() {
+  const ķermenis = document.getElementById('vestures-tabula');
+  const filtrs   = document.getElementById('vesture-filtrs').value;
+  const url      = '/api/ieraksti' + (filtrs ? `?darbs_id=${filtrs}` : '');
+
+  ķermenis.innerHTML = '<tr><td colspan="8" class="tuksha-tabula">Ielādē...</td></tr>';
+
+  try {
+    const atbilde  = await fetch(url);
+    const ieraksti = await atbilde.json();
+
+    if (!ieraksti.length) {
+      ķermenis.innerHTML = '<tr><td colspan="8" class="tuksha-tabula">— Nav ierakstu —</td></tr>';
+      return;
+    }
+
+    ķermenis.innerHTML = ieraksti.map((i, indekss) => {
+      // Aprēķina izpildes procentu
+      const izpilde = Math.min(100, Math.round((i.gatavs_skaits / i.nepieciesams_skaits) * 100));
+      const izpildes_krasa = izpilde >= 100 ? 'nozimite-zala' : izpilde >= 50 ? 'nozimite-zila' : 'nozimite-peleka';
+
+      return `
+        <tr>
+          <td style="color:var(--teksts2)">${indekss + 1}</td>
+          <td><span class="nozimite nozimite-zila">${i.darbs}</span></td>
+          <td>${i.nepieciesams_skaits}</td>
+          <td>${i.gatavs_skaits}</td>
+          <td>${i.laiks_stundas.toFixed(2)}</td>
+          <td><span class="nozimite nozimite-zala">${i.atrums}</span></td>
+          <td><span class="nozimite ${izpildes_krasa}">${izpilde}%</span></td>
+          <td style="color:var(--teksts2); font-size:11px;">${i.datums}</td>
+        </tr>
+      `;
+    }).join('');
+
+  } catch (kl) {
+    ķermenis.innerHTML = '<tr><td colspan="8" class="tuksha-tabula">Kļūda ielādējot datus</td></tr>';
+  }
+}
+
+
+// ─────────────────────────────────────────────
+// PROGNOZES APRĒĶINS
+// ─────────────────────────────────────────────
+
+/** Sūta pieprasījumu uz prognozes API un attēlo rezultātu. */
+async function apreklinatPrognozi() {
+  const darbsId  = document.getElementById('prognoze-darbs').value;
+  const skaits   = parseInt(document.getElementById('prognoze-skaits').value);
+  const pazinojums = document.getElementById('prognoze-pazinojums');
+  const rezultats  = document.getElementById('prognoze-rezultats');
+  const tuksha     = document.getElementById('prognoze-tuksha');
+
+  if (!darbsId) return rādītPazinojumu(pazinojums, 'klauda', 'Izvēlies darba veidu.');
+  if (!skaits || skaits < 1) return rādītPazinojumu(pazinojums, 'klauda', 'Produktu skaitam jābūt ≥ 1.');
+
+  pazinojums.className = 'pazinojums';
+  rezultats.classList.remove('radas');
+
+  try {
+    const atbilde = await fetch(`/api/prognoze?darbs_id=${darbsId}&skaits=${skaits}`);
+    const dati    = await atbilde.json();
+
+    if (!atbilde.ok) {
+      return rādītPazinojumu(pazinojums, 'klauda', dati.klauda || 'Kļūda aprēķinā.');
+    }
+
+    // Attēlo rezultātus
+    document.getElementById('prognoze-laiks-skaitlis').textContent = dati.prognozes_laiks.toFixed(2);
+    document.getElementById('prog-atrums').textContent             = dati.videjais_atrums.toFixed(2);
+    document.getElementById('prog-sesijas').textContent            = dati.sesiju_skaits;
+
+    // Animē progress joslu (simboliski – parāda pilno joslu)
+    document.getElementById('prognoze-progress').style.width = '100%';
+
+    tuksha.style.display     = 'none';
+    rezultats.classList.add('radas');
+
+  } catch (kl) {
+    rādītPazinojumu(pazinojums, 'klauda', 'Nevar sasniegt serveri.');
+  }
+}
+
+
+// ─────────────────────────────────────────────
+// DARBU PĀRVALDĪBA
+// ─────────────────────────────────────────────
+
+/** Pievieno jaunu darba veidu caur API. */
+async function pievienotDarbu() {
+  const nosaukums  = document.getElementById('darbs-nosaukums').value.trim();
+  const apraksts   = document.getElementById('darbs-apraksts').value.trim();
+  const pazinojums = document.getElementById('darbs-pazinojums');
+
+  if (!nosaukums) return rādītPazinojumu(pazinojums, 'klauda', 'Nosaukums ir obligāts.');
+
+  try {
+    const atbilde = await fetch('/api/darbi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nosaukums, apraksts })
+    });
+
+    const rezultats = await atbilde.json();
+
+    if (!atbilde.ok) {
+      return rādītPazinojumu(pazinojums, 'klauda', rezultats.klauda || 'Kļūda pievienojot.');
+    }
+
+    rādītPazinojumu(pazinojums, 'veiksme', `✓ Darbs "${nosaukums}" pievienots.`);
+    document.getElementById('darbs-nosaukums').value = '';
+    document.getElementById('darbs-apraksts').value  = '';
+    ielādetDarbuTabulu();
+
+  } catch (kl) {
+    rādītPazinojumu(pazinojums, 'klauda', 'Nevar sasniegt serveri.');
+  }
+}
+
+/** Ielādē darbu sarakstu un attēlo tabulā. */
+async function ielādetDarbuTabulu() {
+  const ķermenis = document.getElementById('darbu-tabula');
+  try {
+    const atbilde = await fetch('/api/darbi');
+    const darbi   = await atbilde.json();
+
+    if (!darbi.length) {
+      ķermenis.innerHTML = '<tr><td colspan="3" class="tuksha-tabula">— Nav darbu —</td></tr>';
+      return;
+    }
+
+    ķermenis.innerHTML = darbi.map(d => `
+      <tr>
+        <td><span class="nozimite nozimite-peleka">${d.id}</span></td>
+        <td><strong>${d.nosaukums}</strong></td>
+        <td style="color:var(--teksts2)">${d.apraksts || '—'}</td>
+      </tr>
+    `).join('');
+
+  } catch (kl) {
+    ķermenis.innerHTML = '<tr><td colspan="3" class="tuksha-tabula">Kļūda ielādējot</td></tr>';
+  }
+}
+
+
+// ─────────────────────────────────────────────
+// PALĪGFUNKCIJA: PAZIŅOJUMU ATTĒLOŠANA
+// ─────────────────────────────────────────────
+
+/**
+ * Parāda statusu paziņojumu zem formas.
+ * @param {HTMLElement} elements - mērķa elements
+ * @param {string} tips         - 'veiksme' vai 'klauda'
+ * @param {string} teksts       - paziņojuma teksts
+ */
+function rādītPazinojumu(elements, tips, teksts) {
+  elements.textContent = teksts;
+  elements.className   = `pazinojums ${tips}`;
+  // Automātiski paslēpj pēc 4 sekundēm
+  setTimeout(() => { elements.className = 'pazinojums'; }, 4000);
+}
+
+
+// ─────────────────────────────────────────────
+// INICIALIZĀCIJA
+// ─────────────────────────────────────────────
+
+// Ielādē sākotnējos datus, kad lapa ir gatava
+document.addEventListener('DOMContentLoaded', () => {
+  ielādetDarbus('ieraksts-darbs');
+  ielādetPedejosIerakstus();
+});
+
+</script>
+</body>
+</html>
